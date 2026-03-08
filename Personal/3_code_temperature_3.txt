@@ -1,0 +1,108 @@
+#include <ESP8266WiFi.h>
+#include <time.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_PCD8544.h>
+
+// LCD pins
+#define RST D0
+#define CE  D8
+#define DC  D4
+#define DIN D7
+#define CLK D5
+
+Adafruit_PCD8544 display = Adafruit_PCD8544(CLK, DIN, DC, CE, RST);
+
+// WiFi credentials
+const char* ssid = "Redmi 10 Power";
+const char* password = "14324321";
+
+// India time offset
+const char* ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = 19800;
+const int daylightOffset_sec = 0;
+
+void setup() {
+
+Serial.begin(115200);
+
+display.begin();
+display.setBias(4);
+display.setContrast(40);
+display.setRotation(2);   // rotate display 180°
+display.clearDisplay();
+
+display.setTextSize(1);
+display.setTextColor(BLACK);
+
+display.setCursor(0,0);
+display.println("Connecting WiFi");
+display.display();
+
+WiFi.begin(ssid, password);
+
+while (WiFi.status() != WL_CONNECTED) {
+delay(500);
+Serial.print(".");
+}
+
+// WiFi connected
+display.clearDisplay();
+display.setCursor(0,0);
+display.println("WiFi Connected");
+display.display();
+delay(1500);
+
+// Start NTP
+configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+// Wait for time
+struct tm timeinfo;
+while(!getLocalTime(&timeinfo)){
+display.clearDisplay();
+display.setCursor(0,0);
+display.println("Getting Time");
+display.display();
+delay(500);
+}
+}
+
+void loop() {
+
+display.clearDisplay();
+
+display.setTextSize(1);
+display.setTextColor(BLACK);
+
+// WiFi name
+display.setCursor(0,0);
+display.print("WiFi:");
+display.println(WiFi.SSID());
+
+// IP address
+display.setCursor(0,10);
+display.print("IP:");
+display.println(WiFi.localIP());
+
+// Get time
+struct tm timeinfo;
+
+if(getLocalTime(&timeinfo)){
+
+display.setCursor(0,25);
+display.print("Time:");
+
+display.printf("%02d:%02d:%02d",
+timeinfo.tm_hour,
+timeinfo.tm_min,
+timeinfo.tm_sec);
+}
+
+// signal strength
+display.setCursor(0,38);
+display.print("RSSI:");
+display.print(WiFi.RSSI());
+
+display.display();
+
+delay(1000);
+}

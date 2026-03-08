@@ -1,0 +1,185 @@
+#include <ESP8266WiFi.h>
+#include <time.h>
+#include <PubSubClient.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_PCD8544.h>
+
+// Nokia 5110 LCD pins
+#define RST D0
+#define CE  D8
+#define DC  D4
+#define DIN D7
+#define CLK D5
+
+Adafruit_PCD8544 display = Adafruit_PCD8544(CLK, DIN, DC, CE, RST);
+
+// LED pin
+#define LED D2
+
+// WiFi credentials
+const char* ssid = "Redmi 10 Power";
+const char* password = "14324321";
+
+// MQTT broker (your laptop IP)
+const char* mqtt_server = "10.175.234.249";
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+// NTP time settings
+const char* ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = 19800;
+const int daylightOffset_sec = 0;
+
+// Message from Django
+String lcdMessage = "Waiting...";
+
+
+// MQTT message callback
+void callback(char* topic, byte* payload, unsigned int length)
+{
+  String message = "";
+
+  for (int i = 0; i < length; i++)
+  {
+    message += (char)payload[i];
+  }
+
+  Serial.print("Topic: ");
+  Serial.println(topic);
+
+  Serial.print("Message: ");
+  Serial.println(message);
+
+  String topicStr = String(topic);
+
+  // LED Control
+  if (topicStr == "home/led")
+  {
+    if (message == "ON")
+    {
+      digitalWrite(LED, HIGH);
+    }
+
+    if (message == "OFF")
+    {
+      digitalWrite(LED, LOW);
+    }
+  }
+
+  // Display Message
+  if (topicStr == "home/display")
+  {
+    lcdMessage = message.substring(0,14);   // limit message length
+  }
+}
+
+
+// MQTT reconnect
+void reconnect()
+{
+  while (!client.connected())
+  {
+    Serial.print("Connecting MQTT...");
+
+    if (client.connect("ESP8266Client"))
+    {
+      Serial.println("connected");
+
+      client.subscribe("home/led");
+      client.subscribe("home/display");
+    }
+    else
+    {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" retrying...");
+      delay(2000);
+    }
+  }
+}
+
+
+void setup()
+{
+  Serial.begin(115200);
+
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, LOW);
+
+  // LCD setup
+  display.begin();
+  display.setBias(4);
+  display.setContrast(40);
+  display.setRotation(2);
+  display.clearDisplay();
+
+  display.setTextSize(1);
+  display.setTextColor(BLACK);
+
+  display.setCursor(0,0);
+  display.println("Connecting WiFi");
+  display.display();
+
+  // Connect WiFi
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("WiFi Connected");
+
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.println("WiFi Connected");
+  display.display();
+  delay(1500);
+
+  // Start NTP
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+  // MQTT setup
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+}
+
+
+void loop()
+{
+  if (!client.connected())
+  {
+    reconnect();
+  }
+
+  client.loop();
+
+  display.clearDisplay();
+
+  display.setTextSize(1);
+  display.setTextColor(BLACK);
+
+  // Get Time
+  struct tm timeinfo;
+
+  if(getLocalTime(&timeinfo))
+  {
+    display.setCursor(0,0);
+    display.print("TIME:");
+
+    display.printf("%02d:%02d:%02d",
+    timeinfo.tm_hour,
+    timeinfo.tm_min,
+    timeinfo.tm_sec);
+  }
+
+  // Display Django Message
+  display.setCursor(0,20);
+  display.println(lcdMessage);
+
+  display.display();
+
+  delay(1000);
+}

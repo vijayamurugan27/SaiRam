@@ -1,0 +1,45 @@
+#include <Adafruit_GFX.h>
+#include <Adafruit_PCD8544.h>
+
+// NodeMCU pin connections
+#define RST D0
+#define CE  D8
+#define DC  D4
+#define DIN D7
+#define CLK D5
+
+Adafruit_PCD8544 display = Adafruit_PCD8544(CLK, DIN, DC, CE, RST);
+
+void setup() {
+  display.begin();
+  display.setBias(4);
+  display.setContrast(80);
+  display.setRotation(2);
+
+  display.clearDisplay();
+
+  display.setTextSize(1);
+  display.setTextColor(BLACK);
+
+  display.setCursor(0,0);
+  display.println("Hello GPT!");
+
+  display.setCursor(0,10);
+  display.println("NodeMCU");
+
+  display.setCursor(0,20);
+  display.println("ESP8266 LCD");
+ 
+  display.setCursor(0,30);
+  display.println("hello world");
+
+  display.setCursor(0,40);
+  display.println("welcome to IOT");
+ 
+ 
+  display.display();
+}
+
+void loop() {
+
+}

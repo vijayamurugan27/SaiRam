@@ -1,0 +1,10 @@
+| Nokia 5110 | NodeMCU     |
+| ---------- | ----------- |
+| RST        | D0 (GPIO16) |
+| CE         | D8 (GPIO15) |
+| DC         | D4 (GPIO2)  |
+| DIN        | D7 (GPIO13) |
+| CLK        | D5 (GPIO14) |
+| VCC        | 3.3V        |
+| BL         | 3.3V        |
+| GND        | GND         |

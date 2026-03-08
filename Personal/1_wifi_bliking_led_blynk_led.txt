@@ -1,0 +1,37 @@
+#define BLYNK_TEMPLATE_ID "TMPL3_K7_OkzL"
+#define BLYNK_TEMPLATE_NAME "ledonoff"
+#define BLYNK_AUTH_TOKEN "ChZLtZTAnE8bH9VEnJdG9ce8opiUzdRS"
+
+#define BLYNK_PRINT Serial
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+#define LED_BUILTIN 2
+
+char ssid[] = "Redmi 10 Power";
+char pass[] = "14324321";
+
+BlynkTimer timer;
+
+BLYNK_WRITE(V0)
+{
+  int pinValue = param.asInt();
+
+  digitalWrite(LED_BUILTIN, !pinValue);   // Important fix
+
+  Serial.println(pinValue);
+}
+
+void setup()
+{
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(115200);
+
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+}
+
+void loop()
+{
+  Blynk.run();
+}

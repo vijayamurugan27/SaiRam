@@ -1,0 +1,13 @@
+Sometimes the board needs manual reset.
+
+Try:
+
+Hold FLASH button
+
+Press RESET
+
+Release RESET
+
+Release FLASH
+
+Then check the port again.
