@@ -1,0 +1,114 @@
+Your program call is:
+
+?- stoh(3).
+
+This means:
+
+move(3,left,right,center)
+
+Rule used (recursive rule):
+
+move(N,X,Y,Z) :-
+    M is N-1,
+    move(M,X,Z,Y),
+    move(1,X,Y,_),
+    move(M,Z,Y,X).
+
+For N = 3
+
+M = 2
+
+So Prolog executes:
+
+1) move(2,left,center,right)
+2) move(1,left,right,_)
+3) move(2,center,right,left)
+
+But move(2,...) also expands recursively.
+
+Step-by-Step Expansion
+Step 1
+move(2,left,center,right)
+
+Again apply recursion:
+
+1) move(1,left,right,_)
+2) move(1,left,center,_)
+3) move(1,right,center,_)
+
+Now the base rule prints moves.
+
+Output so far
+Move disk from left to right
+Move disk from left to center
+Move disk from right to center
+Step 2
+
+Now Prolog executes the second step of the original call:
+
+move(1,left,right,_)
+
+Base rule → print
+
+Move disk from left to right
+Step 3
+
+Next call:
+
+move(2,center,right,left)
+
+Expand again:
+
+1) move(1,center,left,_)
+2) move(1,center,right,_)
+3) move(1,left,right,_)
+
+These produce:
+
+Move disk from center to left
+Move disk from center to right
+Move disk from left to right
+Combine All Outputs
+
+From Step 1
+
+Move disk from left to right
+Move disk from left to center
+Move disk from right to center
+
+From Step 2
+
+Move disk from left to right
+
+From Step 3
+
+Move disk from center to left
+Move disk from center to right
+Move disk from left to right
+Final Output
+Move disk from left to right
+Move disk from left to center
+Move disk from right to center
+Move disk from left to right
+Move disk from center to left
+Move disk from center to right
+Move disk from left to right
+
+Total moves:
+
+2^N − 1
+
+For N = 3
+
+2³ − 1 = 7 moves
+Important Concept
+
+The key point is:
+
+move(3) → calls move(2)
+move(2) → calls move(1)
+move(1) → prints
+
+So the actual printing happens only in the base case:
+
+move(1,X,Y,_)

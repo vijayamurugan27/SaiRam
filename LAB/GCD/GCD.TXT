@@ -1,0 +1,153 @@
+Now let us run your example
+
+Query:
+
+?- gcd(48,18,G).
+
+
+We will write it like a maths sequence.
+
+Step 1
+
+48 > 18
+
+gcd⁡(48,18)=gcd⁡(48−18,18)
+gcd(48,18)=gcd(48−18,18)
+
+→
+
+gcd⁡(30,18)
+gcd(30,18)
+Step 2
+
+30 > 18
+
+gcd⁡(30,18)=gcd⁡(12,18)
+gcd(30,18)=gcd(12,18)
+Step 3
+
+18 > 12
+
+gcd⁡(12,18)=gcd⁡(12,6)
+gcd(12,18)=gcd(12,6)
+Step 4
+
+12 > 6
+
+gcd⁡(12,6)=gcd⁡(6,6)
+gcd(12,6)=gcd(6,6)
+
+Step 5 (base case)
+
+Now both are equal.
+
+gcd(6,6,6).
+
+
+
+First: what is GCD (in maths)?
+
+For two numbers X and Y
+
+gcd⁡(X,Y)=the largest number that divides both X and Y
+gcd(X,Y)=the largest number that divides both X and Y
+
+Example:
+
+gcd⁡(48,18)=6
+gcd(48,18)=6
+🧠 Important mathematical rule used here
+
+This program is based on this rule:
+
+
+gcd⁡(X,Y)=   {   gcd⁡(X−Y,Y)	if X>Y
+            {   gcd⁡(X,Y−X)	    if Y>X
+            {   X	            if X=Y
+
+Now let us Connect the program:
+
+gcd(X,X,X).
+
+Meaning
+
+If both numbers are equal, that number is the gcd.
+
+In mathematics
+if X=Y,  gcd⁡(X,Y)=X
+if X=Y,gcd(X,Y)=X
+
+So this line matches:
+
+gcd(6,6,6).
+
+
+That is the stopping point.
+
+Second rule
+gcd(X,Y,D) :-
+    X > Y,
+    X1 is X - Y,
+    gcd(X1,Y,D).
+
+
+Meaning in plain English
+
+If X is bigger than Y,
+
+→ subtract Y from X
+→ and compute gcd again.
+
+In mathematics
+gcd⁡(X,Y)=gcd⁡(X−Y,Y)when X>Y
+gcd(X,Y)=gcd(X−Y,Y)when X>Y
+
+So this line:
+
+X1 is X - Y,
+gcd(X1,Y,D).
+
+means:
+
+gcd⁡(X,Y)→gcd⁡(X−Y,Y)
+gcd(X,Y)→gcd(X−Y,Y)
+
+
+Third rule
+gcd(X,Y,D) :-
+    Y > X,
+    Y1 is Y - X,
+    gcd(X,Y1,D).
+
+Meaning
+
+If Y is bigger than X,
+
+→ subtract X from Y
+→ and compute gcd again.
+
+
+In mathematics
+gcd⁡(X,Y)=gcd⁡(X,Y−X)when Y>X
+gcd(X,Y)=gcd(X,Y−X)when Y>X
+
+So far, all three rules together exactly match this:
+
+gcd⁡(X,Y)={X	if X=Y
+gcd⁡(X−Y,Y)	X>Y
+gcd⁡(X,Y−X)	Y>X
+gcd(X,Y)=
+⎩
+⎨
+⎧
+	​
+
+X
+gcd(X−Y,Y)
+gcd(X,Y−X)
+	​
+
+if X=Y
+X>Y
+Y>X
+	​

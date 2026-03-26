@@ -1,0 +1,173 @@
+First understand the idea (very small words)
+
+👉 GCD means
+the biggest number that can divide both numbers
+
+Example:
+
+GCD of 6 and 4 is 2.
+
+🟢 Line 1 – the stopping rule
+gcd(X,X,X).
+
+
+This means:
+
+👉 If both numbers are the same…
+
+gcd(5,5,5)
+
+
+then
+
+👉 the answer is that number itself.
+
+So:
+
+🧠 When the two numbers become equal → STOP.
+
+This is the base case.
+
+🟡 Now the main thinking
+
+👉 If the two numbers are NOT equal,
+we keep making one number smaller.
+
+🟢 Rule 2
+gcd(X,Y,D) :-
+    X > Y,
+    X1 is X - Y,
+    gcd(X1,Y,D).
+
+
+Read it like a story:
+
+👉 If X is bigger than Y
+
+then
+
+👉 subtract Y from X
+
+👉 and try again.
+
+Very small meaning:
+X1 is X - Y
+
+
+means
+
+👉 new smaller X
+
+and
+
+gcd(X1,Y,D).
+
+
+means
+
+👉 try again with the smaller X.
+
+So this rule says:
+
+🧒
+"If X is bigger, reduce X."
+
+🟢 Rule 3
+gcd(X,Y,D) :-
+    Y > X,
+    Y1 is Y - X,
+    gcd(X,Y1,D).
+
+
+Same idea, but opposite side.
+
+It says:
+
+👉 If Y is bigger than X
+
+👉 subtract X from Y
+
+👉 and try again.
+
+So this rule says:
+
+🧒
+"If Y is bigger, reduce Y."
+
+🧠 Very important idea
+
+Your program is doing only one thing:
+
+👉 keep subtracting the smaller number from the bigger number
+👉 until both become equal.
+
+🧒 Let us run a tiny example
+
+Query:
+
+?- gcd(6,4,D).
+
+
+Step by step:
+
+Step 1
+
+X = 6, Y = 4
+
+6 > 4
+
+
+So:
+
+X1 = 6 - 4 = 2
+
+
+Call:
+
+gcd(2,4,D)
+
+Step 2
+
+Now X = 2, Y = 4
+
+4 > 2
+
+
+So:
+
+Y1 = 4 - 2 = 2
+
+
+Call:
+
+gcd(2,2,D)
+
+Step 3
+
+Now both are same:
+
+gcd(2,2,2)
+
+
+Stop.
+
+So:
+
+D = 2
+
+🧒 In very very simple words
+
+Your program works like this:
+
+👉 If both numbers are same → that is the answer.
+
+👉 If X is bigger → make X smaller.
+
+👉 If Y is bigger → make Y smaller.
+
+👉 Keep doing this again and again.
+
+🟢 One-line child version
+Keep cutting the bigger number
+until both numbers become equal.
+That equal number is the GCD.

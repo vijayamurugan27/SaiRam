@@ -1,0 +1,82 @@
+DFS: 
+
+
+👉 First line
+dfs(Start, Goal, Path) :-
+    dfs_visit(Start, Goal, [Start], Path).
+
+
+Very simply:
+
+👉 start from Start
+👉 remember where you have been
+👉 begin walking
+
+👉 This line
+dfs_visit(Goal, Goal, Visited, Path) :-
+    reverse(Visited, Path).
+
+
+Means:
+
+🧒 “If I reached the place I want, stop and show the path.”
+
+👉 This is the real DFS step
+dfs_visit(Current, Goal, Visited, Path) :-
+    edge(Current, Next),
+    \+ member(Next, Visited),
+    dfs_visit(Next, Goal, [Next|Visited], Path).
+
+
+Let me say this in baby words:
+
+✅ edge(Current, Next)
+
+👉 from where I am, where can I go next?
+
+✅ \+ member(Next, Visited)
+
+👉 do NOT go to the same place again
+
+(so we don’t loop forever)
+
+✅ dfs_visit(Next, Goal, [Next|Visited], Path).
+
+👉 go to the next place
+👉 and continue searching
+
+🧸 One-line story
+
+👉 Go forward
+👉 go forward again
+👉 don’t come back
+👉 stop when you reach the goal
+
+That is DFS.
+
+✅ Very short meaning of DFS here
+
+This program searches a path by:
+
+✔ always going deeper first
+✔ only when it cannot go further, Prolog backtracks
+
+That is exactly Depth-First Search.
+
+📌 Small note (important for your level)
+
+Prolog itself already uses DFS internally.
+
+So this DFS program is:
+
+👉 an explicit DFS written using Prolog recursion.
+
+✅ Summary (simple words)
+
+edge/2 → roads
+
+dfs/3 → start DFS
+
+Visited → places already visited
+
+recursion → keep walking

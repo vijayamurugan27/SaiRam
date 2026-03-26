@@ -1,0 +1,147 @@
+Base Case (Smallest Problem)
+move(1,X,Y,_) :-
+
+Meaning:
+
+If there is only 1 disk
+
+Then simply move it from X to Y.
+
+Printing the Move
+write('Move disk from ')
+write(X)
+write(' to ')
+write(Y)
+nl
+
+Example output:
+
+Move disk from left to right
+
+nl means new line.
+
+2️⃣ Recursive Case (More Than One Disk)
+move(N,X,Y,Z) :-
+
+Meaning:
+
+Move N disks from X to Y using Z.
+Step 1: Check N > 1
+N > 1
+
+This ensures we handle multiple disks.
+
+Step 2: Reduce Problem
+M is N - 1
+
+If
+
+N = 3
+
+then
+
+M = 2
+
+So the problem becomes smaller.
+
+Step 3: Move N-1 disks to auxiliary peg
+move(M,X,Z,Y)
+
+Example:
+
+move(2,left,center,right)
+
+Meaning:
+
+Move top 2 disks from LEFT to CENTER
+Step 4: Move the largest disk
+move(1,X,Y,_)
+
+Example:
+
+move(1,left,right,_)
+
+Meaning:
+
+Move largest disk from LEFT → RIGHT
+Step 5: Move N-1 disks onto largest disk
+move(M,Z,Y,X)
+
+Example:
+
+move(2,center,right,left)
+
+Meaning:
+
+Move 2 disks from CENTER → RIGHT
+3️⃣ Starting the Program
+stoh(N) :-
+    move(N,left,right,center).
+
+This predicate starts the solution.
+
+Example query:
+
+?- stoh(3).
+
+Meaning:
+
+Move 3 disks from LEFT to RIGHT using CENTER
+4️⃣ Example Execution (3 disks)
+
+Command:
+
+?- stoh(3).
+
+Output:
+
+Move disk from left to right
+Move disk from left to center
+Move disk from right to center
+Move disk from left to right
+Move disk from center to left
+Move disk from center to right
+Move disk from left to right
+
+Total moves:
+
+2^N − 1
+
+For 3 disks
+
+2³ − 1 = 7 moves
+5️⃣ Recursion Idea (Very Important Concept)
+
+The algorithm works like this:
+
+Move N-1 disks to auxiliary rod
+Move largest disk to destination
+Move N-1 disks from auxiliary to destination
+
+Example for 3 disks
+
+move(3,left,right,center)
+
+1) move(2,left,center,right)
+2) move(1,left,right,_)
+3) move(2,center,right,left)
+6️⃣ Variables Meaning
+Variable	Meaning
+N	number of disks
+X	source peg
+Y	destination peg
+Z	auxiliary peg
+_	unused variable
+
+_ means we don't care about this value.
+
+7️⃣ Key Concepts Used
+Concept	Where Used
+recursion	move calling itself
+base case	move(1,X,Y,_)
+arithmetic	M is N-1
+printing	write()
+newline	nl
+
+
+

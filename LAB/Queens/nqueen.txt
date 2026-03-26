@@ -1,0 +1,196 @@
+First understand the representation
+
+Each queen is written as:
+
+X / Y
+
+
+Meaning:
+
+👉 X = row number
+👉 Y = column number
+
+So a solution looks like:
+
+[1/2, 2/4, 3/1, 4/3, 5/8, 6/6, 7/5, 8/7]
+
+✅ template/1 → fixes the rows
+template([1/_,2/_,3/_,4/_,5/_,6/_,7/_,8/_]).
+
+
+This creates the structure:
+
+Row 1 → unknown column
+Row 2 → unknown column
+...
+Row 8 → unknown column
+
+
+So when you run:
+
+?- template(Q), solution(Q).
+
+
+You start with:
+
+Q = [1/_,2/_,3/_,4/_,5/_,6/_,7/_,8/_]
+
+
+Rows are already fixed.
+
+✅ solution/1
+solution([]).
+
+
+If there are no queens left to place → success.
+
+solution([X/Y | Others]):- 
+    solution(Others), 
+    mem(Y,[1,2,3,4,5,6,7,8]), 
+    noattack(X/Y,Others).
+
+
+Read it as:
+
+A list of queens is a solution if
+
+1️⃣ the rest of the queens (Others) is already a solution
+2️⃣ the column Y is one of 1..8
+3️⃣ this queen X/Y does not attack any queen in Others
+
+Important point:
+
+👉 This program places queens from the end of the list to the front.
+
+That is because:
+
+solution(Others)
+
+
+is called before choosing Y.
+
+✅ mem/2 → chooses a column
+mem(X,[X|_]).
+mem(X,[_|T]):-mem(X,T).
+
+
+This is the normal member predicate.
+
+So:
+
+mem(Y,[1,2,3,4,5,6,7,8])
+
+
+means:
+
+👉 Y can be 1,2,3,4,5,6,7 or 8.
+
+✅ noattack/2
+noattack(_,[]).
+
+
+If there are no other queens → no attack.
+
+noattack(X/Y,[X1/Y1 | Others]):- 
+    Y =\= Y1, 
+    Y1-Y =\= X1-X, 
+    Y1-Y =\= X-X1, 
+    noattack(X/Y,Others).
+
+
+This checks that the queen X/Y does not attack the queen X1/Y1.
+
+🧠 Let us understand the three conditions
+① Not same column
+Y =\= Y1
+
+
+Columns must be different.
+
+② Not same diagonal (one direction)
+Y1 - Y =\= X1 - X
+
+
+This means:
+
+column difference ≠ row difference
+
+③ Not same diagonal (other direction)
+Y1 - Y =\= X - X1
+
+
+This checks the other diagonal direction.
+
+Together, these two are equivalent to:
+
+|Y1 - Y| =\= |X1 - X|
+
+④ Check with remaining queens
+noattack(X/Y, Others).
+
+⚠️ Important thing to notice
+
+There is no rule that generates X.
+
+That is why the template is compulsory.
+
+Without:
+
+template(Q)
+
+
+X will be unbound and the program makes no sense.
+
+✅ How you must run this program
+
+Correct query:
+
+?- template(Q), solution(Q).
+
+🔁 Execution flow (simple)
+
+Start with:
+
+[1/_,2/_,3/_,4/_,5/_,6/_,7/_,8/_]
+
+
+Then:
+
+choose column for row 8
+
+then for row 7
+
+…
+
+finally for row 1
+
+Each time checking:
+
+👉 noattack with already placed queens.
+
+✅ Why this is different from your previous program
+
+Earlier program:
+
+Qs = [C1,C2,C3,...]
+
+
+This one uses:
+
+[1/C1, 2/C2, 3/C3, ...]
+
+
+So here the row number is explicitly stored.
+
+✅ Final short summary
+
+This program:
+
+✔ fixes rows using template
+✔ chooses a column for each row
+✔ checks column and diagonal conflicts
+✔ uses pure Prolog (no clpfd)
+
+and must always be run as:
+
+?- template(Q), solution(Q).

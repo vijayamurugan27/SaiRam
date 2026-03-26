@@ -1,0 +1,237 @@
+How this program works (Simple Explanation)
+
+1. Edge facts
+
+    These define distance between cities
+
+    Example
+        edge(a,b,3)
+    means
+        distance from a to b = 3
+
+2. Cities list
+        
+        cities([a,b,c,d,e]).
+
+List of all cities.
+
+3. permutation
+
+    permutation(Cities,[Start|Rest])
+
+This generates all possible visiting orders of cities.
+
+Example possibilities:
+
+        [a,b,c,d,e]
+        [a,c,b,d,e]
+        [a,e,d,c,b]
+
+
+4. travel predicate
+
+This calculates total distance of a path.
+
+        Example path
+
+                a → b → c → d → e
+
+        Cost calculation
+
+                a→b + b→c + c→d + d→e
+
+5. Return to starting city
+
+    Path = [Start|Rest,Start]
+
+        Example final path
+
+    [a,b,c,d,e,a]
+
+This completes the salesman tour.
+
+How to Run the Program
+
+Query:  tsp(Path,Cost).
+
+The simplified version uses only:
+
+        edge
+        permutation
+        simple recursion
+
+
+!) 
+graph looks like this : 
+
+a ---3--- b
+|         |
+5         3
+|         |
+c ---5--- d
+ \       /
+   8   6
+     e
+
+
+2) List of Cities
+cities([a,b,c,d,e]).
+
+3) Main Travelling Salesman Rule
+tsp(Path,Cost) :-
+
+This defines the main predicate.
+Meaning:
+    Find a path and its cost for the travelling salesman.
+
+Example query:
+
+    ?- tsp(Path,Cost).
+
+Step 1: Get cities
+    
+        cities(Cities)
+    Now
+        Cities = [a,b,c,d,e]
+
+
+Step 2: Generate all possible paths
+permutation(Cities,[Start|Rest])
+
+permutation generates all possible orders.
+
+Example outputs:
+
+[a,b,c,d,e]
+[a,c,b,d,e]
+[a,e,d,c,b]
+
+Here
+
+Start = first city
+Rest  = remaining cities
+
+Example:
+
+Start = a
+Rest = [b,c,d,e]
+Step 3: Calculate travel cost
+travel(Start,[Start|Rest],Cost)
+
+Example path:
+
+[a,b,c,d,e]
+
+Cost calculation:
+
+a → b
+b → c
+c → d
+d → e
+
+The travel predicate adds these distances.
+
+Step 4: Return to starting city
+append([Start|Rest],[Start],Path)
+
+Travelling salesman must return to the starting city.
+
+Example:
+
+Original path
+
+[a,b,c,d,e]
+
+After append:
+
+[a,b,c,d,e,a]
+
+This becomes the final tour.
+
+4️⃣ Cost Calculation Predicate
+Base Case
+travel(_,[_],0).
+
+Meaning:
+
+If only one city remains, cost = 0.
+
+Example:
+
+travel(e,[e],0)
+
+No more travel needed.
+
+Recursive Case
+travel(Current,[Current,Next|Rest],Cost) :-
+
+Example list:
+
+[a,b,c,d,e]
+
+Here
+
+Current = a
+Next = b
+Rest = [c,d,e]
+Step 1: Get distance
+edge(Current,Next,Distance)
+
+Example:
+
+edge(a,b,3)
+
+So
+
+Distance = 3
+Step 2: Continue travel
+travel(Next,[Next|Rest],RemainingCost)
+
+Next recursive call:
+
+travel(b,[b,c,d,e],RemainingCost)
+Step 3: Add cost
+Cost is Distance + RemainingCost
+
+Example:
+
+Cost = 3 + remaining distance
+5️⃣ Example Execution
+
+Query:
+
+?- tsp(Path,Cost).
+
+Possible path generated:
+
+[a,b,e,c,d]
+
+Travel cost calculation:
+
+a → b = 3
+b → e = 3
+e → c = 8
+c → d = 5
+d → a = 2
+
+Total:
+
+3 + 3 + 8 + 5 + 2 = 21
+
+Final output:
+
+Path = [a,b,e,c,d,a]
+Cost = 21
+
+
+concepts used : 
+
+| Concept       | Purpose              |
+| ------------- | -------------------- |
+| `edge`        | graph representation |
+| `cities`      | store all cities     |
+| `permutation` | generate all routes  |
+| recursion     | calculate cost       |
+| `append`      | return to start      |
+
+

@@ -1,0 +1,101 @@
+
+🌱 Idea first
+
+DFS = go deep first
+BFS = go level by level
+
+BFS is like:
+
+👉 first check all near places
+👉 then go farther
+
+🌼 How this BFS works
+👉 This line starts BFS
+bfs(Start, Goal, Path) :-
+    bfs_queue([[Start]], Goal, Path).
+
+
+It makes a queue.
+
+The queue starts as:
+
+[[a]]
+
+
+(one small path only)
+
+👉 This is the stop rule
+bfs_queue([[Goal|Rest] | _], Goal, Path) :-
+    reverse([Goal|Rest], Path).
+
+
+🧒 Means:
+
+👉 if the first path in the queue already starts with the goal
+👉 stop and show the path
+
+👉 This is the real BFS step
+bfs_queue([[Current|RestPath] | OtherPaths], Goal, Path) :-
+    findall([Next,Current|RestPath],
+            ( edge(Current, Next),
+              \+ member(Next, [Current|RestPath])
+            ),
+            NewPaths),
+    append(OtherPaths, NewPaths, UpdatedQueue),
+    bfs_queue(UpdatedQueue, Goal, Path).
+
+
+Now baby steps 👇
+
+✅ [[Current|RestPath] | OtherPaths]
+
+Take the first path from the queue.
+
+✅ edge(Current, Next)
+
+From where I am, where can I go?
+
+✅ \+ member(Next, [Current|RestPath])
+
+Do not go to the same place again.
+
+✅ findall(...)
+
+Make all new small paths from this place.
+
+✅ append(OtherPaths, NewPaths, UpdatedQueue)
+
+Put new paths at the end of the queue.
+
+(This is why it becomes BFS.)
+
+✅ Call again
+bfs_queue(UpdatedQueue, Goal, Path).
+
+🧸 One-line story
+
+👉 Take the first path
+👉 grow it one step
+👉 put it at the back
+👉 repeat
+
+That is BFS.
+
+
+🧠 Very small comparison with your DFS
+
+In DFS you had:
+
+dfs_visit(Next, ...)
+
+
+You go immediately.
+
+In BFS you keep many paths in a queue.
+
+✅ Summary for you
+Part	Meaning
+[[Start]]	queue of paths
+findall	build next level paths
+append	keep queue order
+reverse	fix path order
